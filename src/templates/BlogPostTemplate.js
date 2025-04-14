@@ -1,11 +1,12 @@
-import React from "react";
-import { graphql } from "gatsby";
-// import { MDXRenderer } from "gatsby-plugin-mdx";
+import React from "react"
+import { graphql } from "gatsby"
+import { MDXProvider } from "@mdx-js/react"
+import { Link } from "gatsby"
 
-const BlogPostTemplate = ({ data }) => {
-  const { frontmatter, body } = data.mdx;
+const shortcodes = { Link } // Provide common components here
 
-  // console.log(body)
+const BlogPostTemplate = ({ data, children }) => {
+  const { frontmatter } = data.mdx;
 
   return (
     <>
@@ -13,23 +14,21 @@ const BlogPostTemplate = ({ data }) => {
       <p>{frontmatter.publishedAt}</p>
       <p>{frontmatter.excerpt}</p>
 
-      {/* ta opcja nie działa */}
-      {/* <MDXRenderer>{body}</MDXRenderer> */}
-
-      {body}
+      <MDXProvider components={shortcodes}>
+        {children}
+      </MDXProvider>
     </>
   );
 };
 
 export const query = graphql`
-  query BlogPostById($id: String!) {
+  query($id: String!) {
     mdx(id: { eq: $id }) {
       frontmatter {
         title
         excerpt
         publishedAt
       }
-      body
     }
   }
 `;
